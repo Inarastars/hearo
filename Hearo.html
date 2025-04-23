@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Квиз по международному жестовому языку</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .question-container {
+            margin-bottom: 40px;
+            display: none;
+        }
+        
+        .question-container.active {
+            display: block;
+        }
+        
+        .question {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 15px;
+        }
+        
+        .option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .option img {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .option-label {
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .option.selected {
+            border-color: #3498db;
+            background-color: #f0f8ff;
+        }
+        
+        .option.correct {
+            border-color: #2ecc71;
+            background-color: #d4f7e2;
+        }
+        
+        .option.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+        
+        .control-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .next-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .next-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .prev-btn {
+            background-color: #bdc3c7;
+            color: #2c3e50;
+        }
+        
+        .prev-btn:hover {
+            background-color: #a6acaf;
+        }
+        
+        .progress-container {
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #3498db;
+            width: 10%;
+        }
+        
+        .result-container {
+            text-align: center;
+            display: none;
+        }
+        
+        .result-container h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .restart-btn {
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .restart-btn:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Квиз по международному жестовому языку</h1>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <p id="question-number">Вопрос 1 из 10</p>
+        </div>
+        
+        <!-- Вопрос 1 -->
+        <div class="question-container active" data-question="1">
+            <div class="question">Как будет "привет" на международном жестовом языке?</div>
+            <div class="options-container">
+                <div class="option" data-correct="true">
+                    <img src="/api/placeholder/240/240" alt="Жест 'привет'">
+                    <div class="option-label">Вариант A</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 1">
+                    <div class="option-label">Вариант B</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 2">
+                    <div class="option-label">Вариант C</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 3">
+                    <div class="option-label">Вариант D</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 2 -->
+        <div class="question-container" data-question="2">
+            <div class="question">Как будет "банан" на международном жестовом языке?</div>
+            <div class="options-container">
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 1">
+                    <div class="option-label">Вариант A</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <img src="/api/placeholder/240/240" alt="Жест 'банан'">
+                    <div class="option-label">Вариант B</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 2">
+                    <div class="option-label">Вариант C</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 3">
+                    <div class="option-label">Вариант D</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 3 -->
+        <div class="question-container" data-question="3">
+            <div class="question">Как будет "семья" на международном жестовом языке?</div>
+            <div class="options-container">
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 1">
+                    <div class="option-label">Вариант A</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 2">
+                    <div class="option-label">Вариант B</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <img src="/api/placeholder/240/240" alt="Жест 'семья'">
+                    <div class="option-label">Вариант C</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 3">
+                    <div class="option-label">Вариант D</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 4 -->
+        <div class="question-container" data-question="4">
+            <div class="question">Как будет "спасибо" на международном жестовом языке?</div>
+            <div class="options-container">
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 1">
+                    <div class="option-label">Вариант A</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 2">
+                    <div class="option-label">Вариант B</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 3">
+                    <div class="option-label">Вариант C</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <img src="/api/placeholder/240/240" alt="Жест 'спасибо'">
+                    <div class="option-label">Вариант D</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 5 -->
+        <div class="question-container" data-question="5">
+            <div class="question">Как будет "помощь" на международном жестовом языке?</div>
+            <div class="options-container">
+                <div class="option" data-correct="true">
+                    <img src="/api/placeholder/240/240" alt="Жест 'помощь'">
+                    <div class="option-label">Вариант A</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 1">
+                    <div class="option-label">Вариант B</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 2">
+                    <div class="option-label">Вариант C</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 3">
+                    <div class="option-label">Вариант D</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 6 -->
+        <div class="question-container" data-question="6">
+            <div class="question">Как будет "вода" на международном жестовом языке?</div>
+            <div class="options-container">
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 1">
+                    <div class="option-label">Вариант A</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <img src="/api/placeholder/240/240" alt="Жест 'вода'">
+                    <div class="option-label">Вариант B</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 2">
+                    <div class="option-label">Вариант C</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 3">
+                    <div class="option-label">Вариант D</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 7 -->
+        <div class="question-container" data-question="7">
+            <div class="question">Как будет "друг" на международном жестовом языке?</div>
+            <div class="options-container">
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 1">
+                    <div class="option-label">Вариант A</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 2">
+                    <div class="option-label">Вариант B</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <img src="/api/placeholder/240/240" alt="Жест 'друг'">
+                    <div class="option-label">Вариант C</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 3">
+                    <div class="option-label">Вариант D</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 8 -->
+        <div class="question-container" data-question="8">
+            <div class="question">Как будет "любовь" на международном жестовом языке?</div>
+            <div class="options-container">
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 1">
+                    <div class="option-label">Вариант A</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 2">
+                    <div class="option-label">Вариант B</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 3">
+                    <div class="option-label">Вариант C</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <img src="/api/placeholder/240/240" alt="Жест 'любовь'">
+                    <div class="option-label">Вариант D</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 9 -->
+        <div class="question-container" data-question="9">
+            <div class="question">Как будет "работа" на международном жестовом языке?</div>
+            <div class="options-container">
+                <div class="option" data-correct="true">
+                    <img src="/api/placeholder/240/240" alt="Жест 'работа'">
+                    <div class="option-label">Вариант A</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 1">
+                    <div class="option-label">Вариант B</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 2">
+                    <div class="option-label">Вариант C</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 3">
+                    <div class="option-label">Вариант D</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вопрос 10 -->
+        <div class="question-container" data-question="10">
+            <div class="question">Как будет "учиться" на международном жестовом языке?</div>
+            <div class="options-container">
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 1">
+                    <div class="option-label">Вариант A</div>
+                </div>
+                <div class="option" data-correct="true">
+                    <img src="/api/placeholder/240/240" alt="Жест 'учиться'">
+                    <div class="option-label">Вариант B</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 2">
+                    <div class="option-label">Вариант C</div>
+                </div>
+                <div class="option">
+                    <img src="/api/placeholder/240/240" alt="Неправильный жест 3">
+                    <div class="option-label">Вариант D</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Результаты -->
+        <div class="result-container">
+            <h2>Ваши результаты</h2>
+            <p class="score">Ваш счет: <span id="score">0</span> из 10</p>
+            <button class="restart-btn">Начать заново</button>
+        </div>
+        
+        <div class="control-buttons">
+            <button class="btn prev-btn" disabled>Назад</button>
+            <button class="btn next-btn">Далее</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentQuestion = 1;
+            const totalQuestions = 10;
+            let score = 0;
+            let answers = {};
+            
+            const questionContainers = document.querySelectorAll('.question-container');
+            const nextBtn = document.querySelector('.next-btn');
+            const prevBtn = document.querySelector('.prev-btn');
+            const resultContainer = document.querySelector('.result-container');
+            const progressBar = document.querySelector('#progress');
+            const questionNumber = document.querySelector('#question-number');
+            const scoreElement = document.querySelector('#score');
+            const restartBtn = document.querySelector('.restart-btn');
+            
+            // Инициализация квиза
+            updateProgressBar();
+            
+            // Обработка выбора варианта ответа
+            questionContainers.forEach(container => {
+                const options = container.querySelectorAll('.option');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        // Снимаем выделение с других вариантов
+                        options.forEach(opt => opt.classList.remove('selected'));
+                        
+                        // Выделяем выбранный вариант
+                        this.classList.add('selected');
+                        
+                        // Сохраняем ответ
+                        const questionId = container.getAttribute('data-question');
+                        answers[questionId] = {
+                            selected: this,
+                            isCorrect: this.hasAttribute('data-correct')
+                        };
+                    });
+                });
+            });
+            
+            // Кнопка "Далее"
+            nextBtn.addEventListener('click', function() {
+                // Если текущий вопрос не был отвечен
+                const currentContainer = document.querySelector(`.question-container[data-question="${currentQuestion}"]`);
+                if (!answers[currentQuestion]) {
+                    alert('Пожалуйста, выберите вариант ответа');
+                    return;
+                }
+                
+                // Если это последний вопрос
+                if (currentQuestion === totalQuestions) {
+                    showResults();
+                    return;
+                }
+                
+                // Переходим к следующему вопросу
+                currentQuestion++;
+                updateQuestionDisplay();
+                updateProgressBar();
+            });
+            
+            // Кнопка "Назад"
+            prevBtn.addEventListener('click', function() {
+                if (currentQuestion > 1) {
+                    currentQuestion--;
+                    updateQuestionDisplay();
+                    updateProgressBar();
+                }
+            });
+            
+            // Кнопка "Начать заново"
+            restartBtn.addEventListener('click', function() {
+                resetQuiz();
+            });
+            
+            // Функция обновления отображения вопроса
+            function updateQuestionDisplay() {
+                questionContainers.forEach(container => {
+                    container.classList.remove('active');
+                });
+                
+                const currentContainer = document.querySelector(`.question-container[data-question="${currentQuestion}"]`);
+                currentContainer.classList.add('active');
+                
+                // Обновляем состояние кнопок
+                prevBtn.disabled = currentQuestion === 1;
+                nextBtn.textContent = currentQuestion === totalQuestions ? 'Завершить' : 'Далее';
+                
+                // Обновляем номер вопроса
+                questionNumber.textContent = `Вопрос ${currentQuestion} из ${totalQuestions}`;
+                
+                // Восстанавливаем ответ, если он был выбран ранее
+                if (answers[currentQuestion]) {
+                    answers[currentQuestion].selected.classList.add('selected');
+                }
+            }
+            
+            // Функция обновления прогресс-бара
+            function updateProgressBar() {
+                const progress = (currentQuestion / totalQuestions) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+            
+            // Функция отображения результатов
+            function showResults() {
+                questionContainers.forEach(container => {
+                    container.classList.remove('active');
+                });
+                
+                // Подсчет правильных ответов
+                score = 0;
+                for (const question in answers) {
+                    if (answers[question].isCorrect) {
+                        score++;
+                    }
+                }
+                
+                scoreElement.textContent = score;
+                resultContainer.style.display = 'block';
+                
+                // Скрываем кнопки навигации
+                nextBtn.style.display = 'none';
+                prevBtn.style.display = 'none';
+            }
+            
+            // Функция сброса квиза
+            function resetQuiz() {
+                // Сбрасываем все ответы
+                answers = {};
+                score = 0;
+                currentQuestion = 1;
+                
+                // Убираем выбранные варианты
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // Скрываем результаты
+                resultContainer.style.display = 'none';
+                
+                // Показываем первый вопрос
+                updateQuestionDisplay();
+                updateProgressBar();
+                
+                // Возвращаем кнопки навигации
+                nextBtn.style.display = 'block';
+                prevBtn.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
