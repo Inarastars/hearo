@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-accent mb-2">Live Sign Translator</h1>
+        <p class="text-gray-600">Use your camera to translate sign language in real-time</p>
+    </div>
+    
+    <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
+        <!-- Camera permissions -->
+        <div id="permissionContainer" class="text-center py-8">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <h3 class="text-xl font-bold text-gray-700 mb-4">Camera Access Required</h3>
+            <p class="text-gray-600 mb-6">We need access to your camera to detect and translate sign language.</p>
+            <button id="startCamera" class="bg-primary text-white font-bold py-3 px-6 rounded-xl hover:bg-accent transition">Allow Camera Access</button>
+        </div>
+        
+        <!-- Camera view -->
+        <div id="cameraContainer" class="hidden">
+            <div class="relative">
+                <video id="video" class="w-full h-64 object-cover rounded-xl bg-gray-100" autoplay playsinline></video>
+                <canvas id="canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+            </div>
+            
+            <div class="flex justify-between items-center mt-4">
+                <button id="switchCamera" class="bg-light text-primary p-2 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                </button>
+                <button id="captureImage" class="bg-primary text-white px-6 py-2 rounded-xl hover:bg-accent transition">
+                    Capture
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Translation Results -->
+    <div id="translationContainer" class="hidden bg-white rounded-2xl shadow-md p-6 mb-8">
+        <h3 class="text-xl font-bold text-gray-700 mb-4">Translation Result</h3>
+        
+        <div class="flex items-center">
+            <div class="flex-shrink-0 mr-4">
+                <div id="capturedImageContainer" class="w-24 h-24 bg-gray-100 rounded-xl"></div>
+            </div>
+            <div>
+                <div class="mb-2">
+                    <span class="font-bold text-accent">Detected Sign:</span>
+                    <span id="detectedSign" class="ml-2">Processing...</span>
+                </div>
+                <div class="mb-2">
+                    <span class="font-bold text-accent">Confidence:</span>
+                    <span id="confidenceLevel" class="ml-2">-</span>
+                </div>
+                <div>
+                    <span class="font-bold text-accent">Category:</span>
+                    <span id="signCategory" class="ml-2">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-6">
+            <h4 class="font-bold text-gray-700 mb-2">Similar Signs:</h4>
+            <div id="similarSignsContainer" class="grid grid-cols-3 gap-2">
+                <!-- Similar signs will be added here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Instructions -->
+    <div class="bg-white rounded-2xl shadow-md p-6">
+        <h3 class="text-xl font-bold text-gray-700 mb-4">How to Use</h3>
+        
+        <ol class="list-decimal pl-5 space-y-2 text-gray-600">
+            <li>Allow camera access and position your hand in the frame</li>
+            <li>Make a sign with your hand and hold it steady</li>
+            <li>Click the "Capture" button to analyze the sign</li>
+            <li>View the translation result and similar signs</li>
+        </ol>
+        
+        <div class="mt-6 p-4 bg-light rounded-xl">
+            <p class="text-sm text-gray-600">
+                <strong>Note:</strong> This feature uses MediaPipe Hands for hand pose detection. 
+                The translation works best in good lighting with clear hand visibility.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1620248843/camera_utils.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1620248843/drawing_utils.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Elements
+        const permissionContainer = document.getElementById('permissionContainer');
+        const cameraContainer = document.getElementById('cameraContainer');
+        const translationContainer = document.getElementById('translationContainer');
+        const startCameraBtn = document.getElementById('startCamera');
+        const switchCameraBtn = document.getElementById('switchCamera');
+        const captureImageBtn = document.getElementById('captureImage');
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        
+        // MediaPipe variables
+        let hands;
+        let camera;
+        let canvasCtx;
+        let currentStream;
+        let facingMode = 'user'; // Front camera by default
+        
+        // Flashcards data
+        let flashcards = [];
+        
+        // Fetch flashcards data
+        fetch('/api/data')
+            .then(response => response.json())
+            .then(data => {
+                flashcards = data;
+            });
+        
+        // Start camera button
+        startCameraBtn.addEventListener('click', () => {
+            permissionContainer.classList.add('hidden');
+            cameraContainer.classList.remove('hidden');
+            initCamera();
+        });
+        
+        // Switch camera button
+        switchCameraBtn.addEventListener('click', () => {
+            facingMode = facingMode === 'user' ? 'environment' : 'user';
+            
+            // Stop current stream
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+            
+            // Restart camera with new facingMode
+            initCamera();
+        });
+        
+        // Initialize camera and MediaPipe Hands
+        function initCamera() {
+            // Setup canvas
+            canvasCtx = canvas.getContext('2d');
+            
+            // Initialize MediaPipe Hands
+            hands = new Hands({
+                locateFile: (file) => {
+                    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/${file}`;
+                }
+            });
+            
+            hands.setOptions({
+                maxNumHands: 1,
+                modelComplexity: 1,
+                minDetectionConfidence: 0.5,
+                minTrackingConfidence: 0.5
+            });
+            
+            hands.onResults(onHandResults);
+            
+            // Setup camera
+            navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: facingMode
+                }
+            }).then(stream => {
+                currentStream = stream;
+                video.srcObject = stream;
+                
+                // Adjust canvas size after video loads
+                video.addEventListener('loadedmetadata', () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                });
+                
+                // Start MediaPipe camera
+                camera = new Camera(video, {
+                    onFrame: async () => {
+                        await hands.send({image: video});
+                    },
+                    width: 640,
+                    height: 480
+                });
+                camera.start();
+            }).catch(error => {
+                console.error('Error accessing camera:', error);
+                alert('Unable to access the camera. Please grant permission and try again.');
+            });
+        }
+        
+        // Handle hand detection results
+        async function processHandPose(landmarks) {
+            try {
+                // Prepare data for the backend
+                const data = landmarks.map(lm => [lm.x, lm.y]);
+
+                // Send landmarks to the backend for prediction
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ landmarks: data })
+                });
+
+                const result = await response.json();
+
+                // Update detection result
+                document.getElementById('detectedSign').textContent = result.label || 'Unknown';
+                document.getElementById('confidenceLevel').textContent = `${result.confidence || 0}%`;
+                document.getElementById('signCategory').textContent = result.category || 'N/A';
+
+                // Show similar signs (if available)
+                const similarSignsContainer = document.getElementById('similarSignsContainer');
+                similarSignsContainer.innerHTML = '';
+                (result.similarSigns || []).forEach(sign => {
+                    const signElement = document.createElement('div');
+                    signElement.className = 'bg-light rounded-lg p-2 text-center';
+                    signElement.innerHTML = `
+                        <img src="${sign.source}" alt="${sign.name}" class="w-full h-16 object-contain mb-1">
+                        <p class="text-xs font-medium text-gray-700">${sign.name}</p>
+                    `;
+                    similarSignsContainer.appendChild(signElement);
+                });
+            } catch (error) {
+                console.error('Error processing hand pose:', error);
+            }
+        }
+
+        // Modify onHandResults to call processHandPose
+        function onHandResults(results) {
+            // Clear canvas
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw hand landmarks if detected
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                for (const landmarks of results.multiHandLandmarks) {
+                    drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#3B82F6', lineWidth: 2});
+                    drawLandmarks(canvasCtx, landmarks, {color: '#1E40AF', lineWidth: 1, radius: 3});
+                }
+                const landmarks = results.multiHandLandmarks[0];
+                processHandPose(landmarks);
+            }
+        }
+        
+        // Capture image button
+        captureImageBtn.addEventListener('click', () => {
+            // Create temporary canvas to capture the video frame
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = video.videoWidth;
+            tempCanvas.height = video.videoHeight;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            // Draw video frame on temporary canvas
+            tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+            
+            // Display captured image
+            const capturedImageContainer = document.getElementById('capturedImageContainer');
+            capturedImageContainer.innerHTML = '';
+            
+            const img = document.createElement('img');
+            img.src = tempCanvas.toDataURL('image/png');
+            img.className = 'w-full h-full object-cover rounded-xl';
+            capturedImageContainer.appendChild(img);
+            
+            // Process hand pose and perform translation
+            processHandPose();
+            
+            // Show translation container
+            translationContainer.classList.remove('hidden');
+        });
+        
+        // Process hand pose and generate translation
+        function processHandPose() {
+            // In a real application, this would analyze the hand landmarks
+            // For demo purposes, we'll simulate detection with a random sign
+            
+            // Simulate processing delay
+            document.getElementById('detectedSign').textContent = 'Processing...';
+            document.getElementById('confidenceLevel').textContent = '-';
+            document.getElementById('signCategory').textContent = '-';
+            document.getElementById('similarSignsContainer').innerHTML = '';
+            
+            setTimeout(() => {
+                // Select a random flashcard as our "detected" sign
+                const randomIndex = Math.floor(Math.random() * flashcards.length);
+                const detectedSign = flashcards[randomIndex];
+                
+                // Update detection result
+                document.getElementById('detectedSign').textContent = detectedSign.name;
+                document.getElementById('confidenceLevel').textContent = `${Math.floor(Math.random() * 30 + 70)}%`;
+                document.getElementById('signCategory').textContent = detectedSign.type;
+                
+                // Show similar signs (same category)
+                const similarSigns = flashcards
+                    .filter(card => card.type === detectedSign.type && card.name !== detectedSign.name)
+                    .slice(0, 3);
+                
+                const similarSignsContainer = document.getElementById('similarSignsContainer');
+                similarSignsContainer.innerHTML = '';
+                
+                similarSigns.forEach(sign => {
+                    const signElement = document.createElement('div');
+                    signElement.className = 'bg-light rounded-lg p-2 text-center';
+                    signElement.innerHTML = `
+                        <img src="${sign.source}" alt="${sign.name}" class="w-full h-16 object-contain mb-1">
+                        <p class="text-xs font-medium text-gray-700">${sign.name}</p>
+                    `;
+                    similarSignsContainer.appendChild(signElement);
+                });
+            }, 1500);
+        }
+    });
+</script>
+{% endblock %}

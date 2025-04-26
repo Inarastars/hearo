@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-primary to-accent text-white rounded-3xl p-8 mb-10 shadow-lg">
+        <div class="flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-8 md:mb-0">
+                <h1 class="text-4xl font-bold mb-4">Welcome to Hearo</h1>
+                <p class="text-lg mb-6">Break communication barriers with International Sign Language. Connect with the deaf community worldwide.</p>
+                <a href="/learn" class="inline-block bg-white text-primary font-bold py-3 px-6 rounded-full hover:bg-light hover:shadow-lg transition duration-300">Start Learning</a>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.2/svg/hand-left-outline.svg" alt="Sign Language Icon" class="h-64 w-64 opacity-80">
+            </div>
+        </div>
+    </div>
+
+    <!-- Benefits Section -->
+    <div class="mb-10">
+        <h2 class="text-3xl font-bold mb-6 text-center text-accent">Why Learn International Sign Language?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                <div class="text-primary text-4xl mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Global Communication</h3>
+                <p class="text-gray-600">ISL is designed to be universally understood, allowing you to communicate across borders and cultural boundaries.</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                <div class="text-primary text-4xl mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Inclusivity</h3>
+                <p class="text-gray-600">Bridge the gap between deaf and hearing communities, promoting inclusivity and accessibility in all environments.</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                <div class="text-primary text-4xl mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Cognitive Benefits</h3>
+                <p class="text-gray-600">Learning sign language enhances spatial reasoning, improves memory, and boosts cognitive flexibility.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="bg-white rounded-xl p-8 shadow-md mb-10">
+        <h2 class="text-3xl font-bold mb-6 text-center text-accent">Global Communication Statistics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+            <div>
+                <p class="text-4xl font-bold text-primary mb-2">70M+</p>
+                <p class="text-gray-600">Deaf people worldwide</p>
+            </div>
+            <div>
+                <p class="text-4xl font-bold text-primary mb-2">300+</p>
+                <p class="text-gray-600">Different sign languages</p>
+            </div>
+            <div>
+                <p class="text-4xl font-bold text-primary mb-2">135</p>
+                <p class="text-gray-600">Countries using sign language</p>
+            </div>
+            <div>
+                <p class="text-4xl font-bold text-primary mb-2">1</p>
+                <p class="text-gray-600">International Sign Language</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold mb-4 text-accent">Ready to Start Your Journey?</h2>
+        <p class="text-lg mb-6 text-gray-600">Join thousands of others learning International Sign Language with Hearo.</p>
+        <a href="/learn" class="inline-block bg-primary text-white font-bold py-3 px-8 rounded-full hover:bg-accent hover:shadow-lg transition duration-300">Start Learning Now</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+.section {
+    transition: all 0.3s ease;
+}
+
+.section.hidden {
+    display: none;
+}
+
+.nav-btn {
+    @apply p-3 rounded-full text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-colors;
+}
+
+.nav-btn.active {
+    @apply text-blue-600 bg-blue-50;
+}
+
+#video, #canvas {
+    transform: scaleX(-1);
+}
+
+.flashcard {
+    @apply bg-white rounded-lg shadow-md p-4 cursor-pointer transition-transform hover:scale-105;
+}

@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-accent mb-2">Learn International Sign Language</h1>
+        <p class="text-gray-600">Swipe through flashcards to learn different signs</p>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-gray-700">Categories</h2>
+            <button id="clearFilter" class="text-primary hover:text-accent transition">Clear Filter</button>
+        </div>
+        <div id="categoryContainer" class="flex flex-wrap gap-2"></div>
+    </div>
+
+    <!-- Flashcard Container -->
+    <div class="relative mx-auto max-w-md h-96 mb-8">
+        <div id="flashcardContainer" class="w-full h-full">
+            <!-- Flashcards will be generated here -->
+            <div class="flex items-center justify-center h-full">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+        </div>
+        
+        <!-- Navigation Buttons -->
+        <div class="absolute top-1/2 left-0 right-0 flex justify-between transform -translate-y-1/2 px-4">
+            <button id="prevCard" class="bg-white text-primary rounded-full p-2 shadow-md hover:shadow-lg transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <button id="nextCard" class="bg-white text-primary rounded-full p-2 shadow-md hover:shadow-lg transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Progress Indicator -->
+    <div class="flex items-center justify-center mb-8">
+        <div id="progressContainer" class="flex space-x-1"></div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let flashcards = [];
+        let currentIndex = 0;
+        let filteredFlashcards = [];
+        let categories = [];
+        let selectedCategory = null;
+        
+        // Fetch data from API
+        fetch('/api/data')
+            .then(response => response.json())
+            .then(data => {
+                flashcards = data;
+                filteredFlashcards = [...flashcards];
+                renderFlashcard();
+                updateProgressIndicator();
+            });
+        
+        // Fetch categories
+        fetch('/api/categories')
+            .then(response => response.json())
+            .then(data => {
+                categories = data;
+                renderCategories();
+            });
+        
+        // Render flashcard
+        function renderFlashcard() {
+            if (filteredFlashcards.length === 0) {
+                document.getElementById('flashcardContainer').innerHTML = `
+                    <div class="flex items-center justify-center h-full">
+                        <p class="text-gray-500">No flashcards found for this category.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const card = filteredFlashcards[currentIndex];
+            
+            document.getElementById('flashcardContainer').innerHTML = `
+                <div class="flashcard bg-white rounded-2xl shadow-lg p-6 h-full flex flex-col justify-between transform transition-all duration-300 hover:shadow-xl">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-2xl font-bold text-accent">${card.name}</h3>
+                        <span class="bg-secondary text-primary text-xs py-1 px-3 rounded-full">${card.type}</span>
+                    </div>
+                    <div class="flex justify-center flex-grow my-4">
+                        <img src="${card.source}" alt="${card.name} sign" class="max-h-full object-contain">
+                    </div>
+                    <p class="text-gray-600 text-sm">${card.description}</p>
+                </div>
+            `;
+        }
+        
+        // Update progress indicator
+        function updateProgressIndicator() {
+            const container = document.getElementById('progressContainer');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < filteredFlashcards.length; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('w-2', 'h-2', 'rounded-full', 'transition-all');
+                
+                if (i === currentIndex) {
+                    dot.classList.add('bg-primary', 'w-4');
+                } else {
+                    dot.classList.add('bg-gray-300');
+                }
+                
+                container.appendChild(dot);
+            }
+        }
+        
+        // Render categories
+        function renderCategories() {
+            const container = document.getElementById('categoryContainer');
+            
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.innerText = category;
+                button.classList.add('py-1', 'px-4', 'rounded-full', 'text-sm', 'transition');
+                
+                if (category === selectedCategory) {
+                    button.classList.add('bg-primary', 'text-white');
+                } else {
+                    button.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                }
+                
+                button.addEventListener('click', () => {
+                    if (selectedCategory === category) {
+                        selectedCategory = null;
+                        filteredFlashcards = [...flashcards];
+                    } else {
+                        selectedCategory = category;
+                        filteredFlashcards = flashcards.filter(card => card.type === category);
+                    }
+                    
+                    currentIndex = 0;
+                    renderCategories();
+                    renderFlashcard();
+                    updateProgressIndicator();
+                });
+                
+                container.appendChild(button);
+            });
+        }
+        
+        // Next card
+        document.getElementById('nextCard').addEventListener('click', () => {
+            if (currentIndex < filteredFlashcards.length - 1) {
+                currentIndex++;
+                renderFlashcard();
+                updateProgressIndicator();
+            }
+        });
+        
+        // Previous card
+        document.getElementById('prevCard').addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderFlashcard();
+                updateProgressIndicator();
+            }
+        });
+        
+        // Clear filter
+        document.getElementById('clearFilter').addEventListener('click', () => {
+            selectedCategory = null;
+            filteredFlashcards = [...flashcards];
+            currentIndex = 0;
+            renderCategories();
+            renderFlashcard();
+            updateProgressIndicator();
+        });
+        
+        // Enable touch swipe for flashcards
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        const flashcardContainer = document.getElementById('flashcardContainer');
+        
+        flashcardContainer.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        flashcardContainer.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const swipeDistance = touchEndX - touchStartX;
+            
+            if (swipeDistance > 50 && currentIndex > 0) {
+                // Swipe right - previous card
+                currentIndex--;
+                renderFlashcard();
+                updateProgressIndicator();
+            } else if (swipeDistance < -50 && currentIndex < filteredFlashcards.length - 1) {
+                // Swipe left - next card
+                currentIndex++;
+                renderFlashcard();
+                updateProgressIndicator();
+            }
+        }
+    });
+</script>
+{% endblock %}

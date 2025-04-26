@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-accent mb-2">Test Your Knowledge</h1>
+        <p class="text-gray-600">Challenge yourself with ISL quizzes</p>
+    </div>
+    
+    <!-- Quiz Setup -->
+    <div id="quizSetup" class="bg-white rounded-2xl shadow-md p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-700 mb-4">Quiz Settings</h2>
+        
+        <div class="mb-4">
+            <label class="block text-gray-600 mb-2">Select Category:</label>
+            <select id="categorySelect" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
+                <option value="all">All Categories</option>
+                <!-- Categories will be added here -->
+            </select>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-600 mb-2">Number of Questions:</label>
+            <div class="flex items-center">
+                <input type="range" id="questionCount" min="5" max="20" value="10" class="w-full mr-4">
+                <span id="questionCountValue" class="text-primary font-bold">10</span>
+            </div>
+        </div>
+        
+        <button id="startQuiz" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-accent transition">Start Quiz</button>
+    </div>
+    
+    <!-- Quiz Container -->
+    <div id="quizContainer" class="hidden">
+        <div class="bg-white rounded-2xl shadow-md p-6 mb-4">
+            <!-- Quiz Progress -->
+            <div class="flex justify-between items-center mb-4">
+                <span id="questionNumber" class="text-primary font-bold">Question 1/10</span>
+                <span id="timer" class="text-gray-600">00:00</span>
+            </div>
+            
+            <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
+                <div id="progressBar" class="bg-primary h-2 rounded-full" style="width: 10%"></div>
+            </div>
+            
+            <!-- Question -->
+            <div id="questionContainer" class="mb-6">
+                <h3 id="questionText" class="text-xl font-bold text-gray-700 mb-4">What sign is this?</h3>
+                <div class="flex justify-center mb-4">
+                    <img id="questionImage" src="" alt="Sign Image" class="h-48 object-contain">
+                </div>
+            </div>
+            
+            <!-- Options -->
+            <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Options will be added here -->
+            </div>
+        </div>
+        
+        <button id="nextQuestion" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-accent transition hidden">Next Question</button>
+    </div>
+    
+    <!-- Results Container -->
+    <div id="resultsContainer" class="hidden bg-white rounded-2xl shadow-md p-6 text-center">
+        <h2 class="text-2xl font-bold text-accent mb-4">Quiz Results</h2>
+        
+        <div class="mb-6">
+            <div class="inline-flex items-center justify-center p-4 bg-light rounded-full mb-4">
+                <span id="scorePercentage" class="text-4xl font-bold text-primary">0%</span>
+            </div>
+            <p class="text-gray-600">You got <span id="correctAnswers">0</span> out of <span id="totalQuestions">10</span> questions right</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="p-4 bg-light rounded-xl">
+                <p class="text-gray-600 mb-2">Time Taken</p>
+                <p id="timeTaken" class="text-xl font-bold text-primary">00:00</p>
+            </div>
+            <div class="p-4 bg-light rounded-xl">
+                <p class="text-gray-600 mb-2">Category</p>
+                <p id="quizCategory" class="text-xl font-bold text-primary">All Categories</p>
+            </div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4">
+            <button id="retryQuiz" class="w-full sm:w-1/2 bg-primary text-white font-bold py-3 rounded-xl hover:bg-accent transition">Retry Quiz</button>
+            <button id="backToSetup" class="w-full sm:w-1/2 bg-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-300 transition">Back to Setup</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Elements
+        const quizSetup = document.getElementById('quizSetup');
+        const quizContainer = document.getElementById('quizContainer');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const categorySelect = document.getElementById('categorySelect');
+        const questionCountSlider = document.getElementById('questionCount');
+        const questionCountValue = document.getElementById('questionCountValue');
+        const startQuizBtn = document.getElementById('startQuiz');
+        const nextQuestionBtn = document.getElementById('nextQuestion');
+        const retryQuizBtn = document.getElementById('retryQuiz');
+        const backToSetupBtn = document.getElementById('backToSetup');
+        
+        // Quiz variables
+        let flashcards = [];
+        let quizQuestions = [];
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let quizTimer = null;
+        let quizStartTime = 0;
+        let quizEndTime = 0;
+        
+        // Fetch all data
+        fetch('/api/data')
+            .then(response => response.json())
+            .then(data => {
+                flashcards = data;
+                loadCategories();
+            });
+        
+        // Load categories
+        function loadCategories() {
+            const categories = [...new Set(flashcards.map(card => card.type))];
+            
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categorySelect.appendChild(option);
+            });
+        }
+        
+        // Update question count display
+        questionCountSlider.addEventListener('input', () => {
+            questionCountValue.textContent = questionCountSlider.value;
+        });
+        
+        // Start quiz
+        startQuizBtn.addEventListener('click', () => {
+            const category = categorySelect.value;
+            const questionCount = parseInt(questionCountSlider.value);
+            
+            // Filter flashcards by category if not "all"
+            let availableCards = [...flashcards];
+            if (category !== 'all') {
+                availableCards = flashcards.filter(card => card.type === category);
+            }
+            
+            // Check if we have enough flashcards
+            if (availableCards.length < 4) {
+                alert('Not enough flashcards available for this category. Please select another category.');
+                return;
+            }
+            
+            // Generate quiz questions
+            generateQuizQuestions(availableCards, questionCount);
+            
+            // Hide setup, show quiz
+            quizSetup.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            
+            // Start timer
+            quizStartTime = new Date();
+            startTimer();
+            
+            // Show first question
+            showQuestion(0);
+        });
+        
+        // Generate quiz questions
+        function generateQuizQuestions(cards, count) {
+            // Shuffle cards
+            const shuffledCards = [...cards].sort(() => 0.5 - Math.random());
+            
+            // Take only what we need
+            const selectedCards = shuffledCards.slice(0, Math.min(count, shuffledCards.length));
+            
+            // Generate questions
+            quizQuestions = selectedCards.map(card => {
+                // Get three random wrong answers
+                const otherCards = cards.filter(c => c.name !== card.name);
+                const shuffledOthers = [...otherCards].sort(() => 0.5 - Math.random());
+                const wrongAnswers = shuffledOthers.slice(0, 3).map(c => c.name);
+                
+                // Create answers array with correct and wrong answers
+                const answers = [card.name, ...wrongAnswers].sort(() => 0.5 - Math.random());
+                
+                return {
+                    image: card.source,
+                    correctAnswer: card.name,
+                    answers: answers,
+                    type: card.type
+                };
+            });
+            
+            // Reset quiz state
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+        }
+        
+        // Show question
+        function showQuestion(index) {
+            const question = quizQuestions[index];
+            const questionNumber = document.getElementById('questionNumber');
+            const progressBar = document.getElementById('progressBar');
+            const questionImage = document.getElementById('questionImage');
+            const optionsContainer = document.getElementById('optionsContainer');
+            
+            // Update question number and progress
+            questionNumber.textContent = `Question ${index + 1}/${quizQuestions.length}`;
+            progressBar.style.width = `${((index + 1) / quizQuestions.length) * 100}%`;
+            
+            // Set question image
+            questionImage.src = question.image;
+            questionImage.alt = `Sign for question ${index + 1}`;
+            
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+            
+            // Add options
+            question.answers.forEach(answer => {
+                const button = document.createElement('button');
+                button.textContent = answer;
+                button.classList.add('p-4', 'rounded-xl', 'font-bold', 'text-left', 'transition');
+                button.classList.add('bg-light', 'text-gray-700', 'hover:bg-gray-200');
+                
+                button.addEventListener('click', () => handleAnswerClick(button, answer, question.correctAnswer));
+                
+                optionsContainer.appendChild(button);
+            });
+            
+            // Hide next button
+            nextQuestionBtn.classList.add('hidden');
+        }
+        
+        // Handle answer click
+        function handleAnswerClick(button, selectedAnswer, correctAnswer) {
+            // Disable all option buttons
+            const optionButtons = document.querySelectorAll('#optionsContainer button');
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+                
+                // Mark correct answer
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.remove('bg-light', 'text-gray-700');
+                    btn.classList.add('bg-green-500', 'text-white');
+                }
+            });
+            
+            // Mark selected answer if wrong
+            if (selectedAnswer !== correctAnswer) {
+                button.classList.remove('bg-light', 'text-gray-700');
+                button.classList.add('bg-red-500', 'text-white');
+            } else {
+                correctAnswers++;
+            }
+            
+            // Show next button or end quiz
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                nextQuestionBtn.classList.remove('hidden');
+            } else {
+                endQuiz();
+            }
+        }
+        
+        // Next question
+        nextQuestionBtn.addEventListener('click', () => {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+        });
+        
+        // Start timer
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            let seconds = 0;
+            
+            quizTimer = setInterval(() => {
+                seconds++;
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        // End quiz
+        function endQuiz() {
+            // Stop timer
+            clearInterval(quizTimer);
+            quizEndTime = new Date();
+            
+            // Calculate time taken
+            const timeTaken = Math.floor((quizEndTime - quizStartTime) / 1000);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            
+            // Update results
+            document.getElementById('scorePercentage').textContent = `${Math.round((correctAnswers / quizQuestions.length) * 100)}%`;
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            document.getElementById('totalQuestions').textContent = quizQuestions.length;
+            document.getElementById('timeTaken').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('quizCategory').textContent = categorySelect.options[categorySelect.selectedIndex].text;
+            
+            // Hide quiz, show results
+            quizContainer.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+        }
+        
+        // Retry quiz
+        retryQuizBtn.addEventListener('click', () => {
+            // Hide results, show quiz
+            resultsContainer.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            
+            // Reset quiz
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            
+            // Generate new questions with same settings
+            const category = categorySelect.value;
+            const questionCount = parseInt(questionCountSlider.value);
+            
+            let availableCards = [...flashcards];
+            if (category !== 'all') {
+                availableCards = flashcards.filter(card => card.type === category);
+            }
+            
+            generateQuizQuestions(availableCards, questionCount);
+            
+            // Start timer
+            quizStartTime = new Date();
+            startTimer();
+            
+            // Show first question
+            showQuestion(0);
+        });
+        
+        // Back to setup
+        backToSetupBtn.addEventListener('click', () => {
+            // Hide results, show setup
+            resultsContainer.classList.add('hidden');
+            quizSetup.classList.remove('hidden');
+        });
+    });
+</script>
+{% endblock %}
