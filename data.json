@@ -3,7 +3,7 @@
       "name": "Hello",
       "type": "Greetings",
       "description": "Wave your hand with your palm facing outward. This is one of the most common signs and is universally recognized.",
-      "source": "/static/media/hello.png"
+      "source": "/static/media/hello.gif"
     },
     {
       "name": "Thank You",
