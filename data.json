@@ -1,0 +1,140 @@
+[
+    {
+      "name": "Hello",
+      "type": "Greetings",
+      "description": "Wave your hand with your palm facing outward. This is one of the most common signs and is universally recognized.",
+      "source": "/static/media/hello.gif"
+    },
+    {
+      "name": "Thank You",
+      "type": "Greetings",
+      "description": "Touch your chin or lips with the fingertips of your flat hand, then move your hand forward toward the person you're thanking.",
+      "source": "/static/media/thank_you.png"
+    },
+    {
+      "name": "Please",
+      "type": "Greetings",
+      "description": "Rub your flat hand in a circular motion on your chest. This sign shows politeness and respect.",
+      "source": "/static/media/please.png"
+    },
+    {
+      "name": "Sorry",
+      "type": "Greetings",
+      "description": "Make a fist and rub it in a circular motion over your chest. This shows remorse or apology.",
+      "source": "/static/media/sorry.png"
+    },
+    {
+      "name": "Yes",
+      "type": "Basics",
+      "description": "Make a fist and nod it up and down, like a head nodding 'yes'. This is simple and widely understood.",
+      "source": "/static/media/yes.png"
+    },
+    {
+      "name": "No",
+      "type": "Basics",
+      "description": "Extend your index and middle fingers, then snap them together like scissors. This represents rejection or negation.",
+      "source": "/static/media/no.png"
+    },
+    {
+      "name": "Water",
+      "type": "Food & Drink",
+      "description": "Form the letter 'W' with your dominant hand and bring it to your mouth, as if drinking. This mimics drinking water.",
+      "source": "/static/media/water.png"
+    },
+    {
+      "name": "Food",
+      "type": "Food & Drink",
+      "description": "Bring your fingertips together and tap them against your mouth a few times. This mimics eating.",
+      "source": "/static/media/food.png"
+    },
+    {
+      "name": "Coffee",
+      "type": "Food & Drink",
+      "description": "Mimic holding a cup with one hand and stirring with the other. This represents preparing coffee.",
+      "source": "/static/media/coffee.png"
+    },
+    {
+      "name": "Banana",
+      "type": "Fruits",
+      "description": "Mimic peeling a banana with both hands. Hold one hand as if holding a banana and use the other to peel it.",
+      "source": "/static/media/banana.png"
+    },
+    {
+      "name": "Apple",
+      "type": "Fruits",
+      "description": "Make a fist with your hand and rotate it against your cheek, as if taking a bite from an apple.",
+      "source": "/static/media/apple.png"
+    },
+    {
+      "name": "Orange",
+      "type": "Fruits",
+      "description": "Form a 'C' shape with your hand and squeeze it repeatedly, as if squeezing an orange.",
+      "source": "/static/media/orange.png"
+    },
+    {
+      "name": "Help",
+      "type": "Emergency",
+      "description": "Place one flat hand on top of the other palm, then raise both hands up. This represents lifting or assisting.",
+      "source": "/static/media/help.png"
+    },
+    {
+      "name": "Emergency",
+      "type": "Emergency",
+      "description": "Cross your arms in front of your chest in an 'X' pattern, then thrust them outward. This signals urgency.",
+      "source": "/static/media/emergency.png"
+    },
+    {
+      "name": "Doctor",
+      "type": "Emergency",
+      "description": "Make a 'D' handshape and place it against your wrist, as if taking a pulse.",
+      "source": "/static/media/doctor.png"
+    },
+    {
+      "name": "Happy",
+      "type": "Emotions",
+      "description": "Place both flat hands on your chest and move them up in circles. This conveys joy or happiness.",
+      "source": "/static/media/happy.png"
+    },
+    {
+      "name": "Sad",
+      "type": "Emotions",
+      "description": "Place both hands on your face and draw them downward. This mimics tears falling from your eyes.",
+      "source": "/static/media/sad.png"
+    },
+    {
+      "name": "Angry",
+      "type": "Emotions",
+      "description": "Place both hands in front of your chest with fingers spread, then move them upward while closing your fingers. This conveys rising anger.",
+      "source": "/static/media/angry.png"
+    },
+    {
+      "name": "Love",
+      "type": "Emotions",
+      "description": "Cross your arms over your chest, as if hugging yourself. This represents affection and love.",
+      "source": "/static/media/love.png"
+    },
+    {
+      "name": "Friend",
+      "type": "Relationships",
+      "description": "Hook your index fingers together, then reverse the position. This represents a bond between people.",
+      "source": "/static/media/friend.png"
+    },
+    {
+      "name": "Family",
+      "type": "Relationships",
+      "description": "Form an 'F' handshape and make a circular motion around your face. This represents the unit of family.",
+      "source": "/static/media/family.png"
+    },
+    {
+      "name": "Mother",
+      "type": "Relationships",
+      "description": "Tap your thumb on your chin. This is derived from the sign for 'female' combined with 'parent'.",
+      "source": "/static/media/mother.png"
+    },
+    {
+      "name": "Father",
+      "type": "Relationships",
+      "description": "Tap your thumb on your forehead. This is derived from the sign for 'male' combined with 'parent'.",
+      "source": "/static/media/father.png"
+    }
+  ]
