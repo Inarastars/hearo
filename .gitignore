@@ -5,3 +5,4 @@ instance/
 .env
 *.log
 *.sqlite3
+.venv/
