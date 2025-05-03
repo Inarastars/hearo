@@ -6,3 +6,6 @@ instance/
 *.log
 *.sqlite3
 .venv/
+.idea/
+*.egg-info/
+*.egg
