@@ -3,168 +3,168 @@
       "name": "Hello",
       "type": "Greetings",
       "description": "Wave your hand with your palm facing outward. This is one of the most common signs and is universally recognized.",
-      "source": "/static/amina mama/hello.gif"
+      "source": "/static/gifs/hello.gif"
     },
     {
       "name": "I am sorry",
       "type": "Greetings",
       "description": "Make a fist and rub it in a circular motion over your chest. This shows remorse or apology.",
-      "source": "/static/amina mama/i am sorry.gif"
+      "source": "/static/gifs/i am sorry.gif"
     },
     {
       "name": "Welcome",
       "type": "Greetings",
       "description": "With your palm facing up, move your hand from the side toward the center of your chest.",
-      "source": "/static/amina mama/welcome.gif"
+      "source": "/static/gifs/welcome.gif"
     },
     {
       "name": "Goodbye",
       "type": "Greetings",
       "description": "Wave your open hand back and forth with fingers together.",
-      "source": "/static/amina mama/bye.gif"
+      "source": "/static/gifs/bye.gif"
     },
     {
       "name": "Mother",
       "type": "Relationships",
       "description": "Tap your thumb on your chin. This is derived from the sign for 'female' combined with 'parent'.",
-      "source": "/static/amina mama/amina mama (2).gif"
+      "source": "/static/gifs/amina mama (2).gif"
     },
     {
       "name": "Father",
       "type": "Relationships",
       "description": "Tap your thumb on your forehead. This is derived from the sign for 'male' combined with 'parent'.",
-      "source": "/static/amina mama/amina papa.gif"
+      "source": "/static/gifs/amina papa.gif"
     },
     {
       "name" : "Friend",
       "type": "Relationships",
       "description": "Hook both index fingers and link them together, then switch positions and link again.",
-      "source": "/static/amina mama/amina drug.gif"
+      "source": "/static/gifs/amina drug.gif"
     },
     {
       "name" : "I",
       "type": "Pronouns",
       "description": "Point your index finger at yourself.",
-      "source": "/static/amina mama/ya azgar.gif"
+      "source": "/static/gifs/ya azgar.gif"
     },
     {
       "name" : "You",
       "type": "Pronouns",
       "description": "Point your index finger at the person you're addressing.",
-      "source": "/static/amina mama/tyi.gif"
+      "source": "/static/gifs/tyi.gif"
     },
     {
       "name" : "He",
       "type": "Pronouns",
       "description": "Point your index finger toward where the male person is or was.",
-      "source": "/static/amina mama/on.gif"
+      "source": "/static/gifs/on.gif"
     },
     {
       "name" : "She",
       "type": "Pronouns",
       "description": "Point your index finger toward where the female person is or was.",
-      "source": "/static/amina mama/ona.gif"
+      "source": "/static/gifs/ona.gif"
     },
     {
       "name" : "1",
       "type": "Numbers",
       "description": "Index finger up, palm facing away.",
-      "source": "static/amina mama/1 ажар.gif"
+      "source": "static/gifs/1 azhar.gif"
     },
    {
       "name" : "2",
       "type": "Numbers",
       "description": "Index and middle fingers up, palm away from you .",
-      "source": "/static/amina mama/2 ажар.gif"
+      "source": "/static/gifs/2 azhar.gif"
     },
    {
       "name" : "3",
       "type": "Numbers",
       "description": " Index, middle, and thumb up, palm away from you.",
-      "source": "/static/amina mama/3 ажар.gif"
+      "source": "/static/gifs/3 azhar.gif"
     },
    {
       "name" : "4",
       "type": "Numbers",
       "description": "Four fingers up (excluding thumb), palm away from you.",
-      "source": "/static/amina mama/4 ажар.gif"
+      "source": "/static/gifs/4 azhar.gif"
     },
    {
       "name" : "5",
       "type": "Numbers",
       "description": "All five fingers up, palm away from you.",
-      "source": "/static/amina mama/5 ажар.gif"
+      "source": "/static/gifs/5 azhar.gif"
     },
    {
       "name" : "6",
       "type": "Numbers",
       "description": "All five fingers up, palm away from you and raise the index finger of your second hand.",
-      "source": "/static/amina mama/6 ажар.gif"
+      "source": "/static/gifs/6 azhar.gif"
     },
    {
       "name" : "7",
       "type": "Numbers",
       "description": "All five fingers up, palm away from you. And raise the index and middle fingers of your second hand.",
-      "source": "/static/amina mama/7 ажар.gif"
+      "source": "/static/gifs/7 azhar.gif"
     },
    {
       "name" : "8",
       "type": "Numbers",
       "description": "All five fingers up, palm away from you. And raise the index, middle and ring fingers of your second hand.",
-      "source": "/static/amina mama/8 ажар.gif"
+      "source": "/static/gifs/8 azhar.gif"
     },
    {
       "name" : "9",
       "type": "Numbers",
       "description": "All five fingers up, palm away from you. And raise all the fingers of the other hand except the thumb.",
-      "source": "/static/amina mama/9 ажар.gif"
+      "source": "/static/gifs/9 azhar.gif"
     },
    {
       "name" : "10",
       "type": "Numbers",
       "description": "Raise all fingers of both hands.",
-      "source": "/static/amina mama/10 azhar.gif"
+      "source": "/static/gifs/10 azhar.gif"
     },
    {
       "name" : "Monday",
       "type": "Days of the week",
       "description": "Four fingers are clenched into a fist, the thumb is inside.",
-      "source": "/static/amina mama/monday.gif"
+      "source": "/static/gifs/monday.gif"
     },
    {
       "name" : "Tuesday",
       "type": "Days of the week",
       "description": "The index finger is half bent, the other fingers are clenched into a fist.",
-      "source": "/static/amina mama/tuesday.gif"
+      "source": "/static/gifs/tuesday.gif"
     },
    {
       "name" : "Wednesday",
       "type": "Days of the week",
       "description": "Hand shows three fingers in the shape of the letter <W>.",
-      "source": "/static/amina mama/wednsday.gif"
+      "source": "/static/gifs/wednsday.gif"
     },
    {
       "name" : "Thursday",
       "type": "Days of the week",
       "description": "The index finger is half bent, the other fingers are clenched into a fist. The index and middle fingers are brought together and point to the side, all the others are bent.",
-      "source": "/static/amina mama/thursday.gif"
+      "source": "/static/gifs/thursday.gif"
     },
    {
       "name" : "Friday",
       "type": "Days of the week",
       "description": "The thumb holds the index finger on top. All other fingers are spread out.",
-      "source": "/static/amina mama/friday.gif"
+      "source": "/static/gifs/friday.gif"
     },
    {
       "name" : "Saturday",
       "type": "Days of the week",
       "description": "The hand is clenched into a fist, the thumb is on the outside.",
-      "source": "/static/amina mama/saturday.gif"
+      "source": "/static/gifs/saturday.gif"
     },
   {
     "name": "Sunday",
     "type": "Days of the week",
     "description": "Hands clasped in supplication.",
-    "source": "/static/amina mama/sunday.gif"
+    "source": "/static/gifs/sunday.gif"
   }
   ]
